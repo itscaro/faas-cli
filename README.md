@@ -73,7 +73,7 @@ Here is an example file using the `samples.yml` file included in the repository.
 provider:
   name: faas
   gateway: http://localhost:8080
-
+  network: func_functions
 functions:
   url-ping:
     lang: python
