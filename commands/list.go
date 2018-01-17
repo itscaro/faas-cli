@@ -30,7 +30,7 @@ var listCmd = &cobra.Command{
 	Short:   "List OpenFaaS functions",
 	Long:    `Lists OpenFaaS functions either on a local or remote gateway`,
 	Example: `  faas-cli list
-  faas-cli list --gateway https://localhost:8080 --verbose`,
+  faas-cli list --gateway https://domain:port --verbose`,
 	RunE: runList,
 }
 

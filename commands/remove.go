@@ -32,7 +32,7 @@ explicitly specifying a function name.`,
   faas-cli remove -f ./samples.yml --filter "*gif*"
   faas-cli remove -f ./samples.yml --regex "fn[0-9]_.*"
   faas-cli remove url-ping
-  faas-cli remove img2ansi --gateway==http://remote-site.com:8080`,
+  faas-cli remove img2ansi --gateway https://domain:port`,
 	RunE: runDelete,
 }
 

@@ -39,12 +39,12 @@ func init() {
 
 // newFunctionCmd displays newFunction information
 var newFunctionCmd = &cobra.Command{
-	Use:   "new FUNCTION_NAME --lang=FUNCTION_LANGUAGE [--gateway=http://domain:port] | --list)",
+	Use:   "new FUNCTION_NAME --lang=FUNCTION_LANGUAGE [--gateway GATEWAY_URL] | --list)",
 	Short: "Create a new template in the current folder with the name given as name",
 	Long: `The new command creates a new function based upon hello-world in the given
 language or type in --list for a list of languages available.`,
 	Example: `faas-cli new chatbot --lang node
-  faas-cli new textparser --lang python --gateway http://mydomain:8080
+  faas-cli new textparser --lang python --gateway https://domain:port
   faas-cli new --list`,
 	RunE: runNewFunction,
 }

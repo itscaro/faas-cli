@@ -35,7 +35,7 @@ var loginCmd = &cobra.Command{
 	Use:   `login [--username USERNAME] [--password PASSWORD] [--gateway GATEWAY_URL]`,
 	Short: "Log in to OpenFaaS gateway",
 	Long:  "Log in to OpenFaaS gateway.\nIf no gateway is specified, the default local one will be used.",
-	Example: `  faas-cli login -u user -p password --gateway http://localhost:8080
+	Example: `  faas-cli login -u user -p password --gateway https://domain:port
   cat ~/faas_pass.txt | faas-cli login -u user --password-stdin --gateway https://openfaas.mydomain.com`,
 	RunE: runLogin,
 }
