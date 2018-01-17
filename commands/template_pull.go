@@ -4,7 +4,6 @@ package commands
 
 import (
 	"fmt"
-	"os"
 	"regexp"
 
 	"github.com/spf13/cobra"
@@ -56,10 +55,10 @@ Currently supported verbs: %v`, supportedVerbs)
 	Long: `Downloads the compressed github repo specified by [URL], and extracts the 'template'
 	directory from the root of the repo, if it exists.`,
 	Example: "faas-cli template pull https://github.com/openfaas/faas-cli",
-	Run:     runTemplatePull,
+	RunE:    runTemplatePull,
 }
 
-func runTemplatePull(cmd *cobra.Command, args []string) {
+func runTemplatePull(cmd *cobra.Command, args []string) error {
 	repository := ""
 	if len(args) > 1 {
 		repository = args[1]
@@ -69,6 +68,8 @@ func runTemplatePull(cmd *cobra.Command, args []string) {
 	if err := fetchTemplates(repository, overwrite); err != nil {
 		fmt.Println(err)
 
-		os.Exit(1)
+		return err
 	}
+
+	return nil
 }
