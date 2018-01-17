@@ -5,9 +5,7 @@ package commands
 
 import (
 	"fmt"
-	"runtime"
 
-	"github.com/morikuni/aec"
 	"github.com/openfaas/faas-cli/version"
 	"github.com/spf13/cobra"
 )
@@ -40,21 +38,8 @@ func runVersion(cmd *cobra.Command, args []string) {
 	if shortVersion {
 		fmt.Println(version.BuildVersion())
 	} else {
-		figletColoured := aec.BlueF.Apply(figletStr)
-		if runtime.GOOS == "windows" {
-			figletColoured = aec.GreenF.Apply(figletStr)
-		}
-		fmt.Printf(figletColoured)
+		printFiglet()
 		fmt.Printf("Commit: %s\n", version.GitCommit)
 		fmt.Printf("Version: %s\n", version.BuildVersion())
 	}
 }
-
-const figletStr = `  ___                   _____           ____
- / _ \ _ __   ___ _ __ |  ___|_ _  __ _/ ___|
-| | | | '_ \ / _ \ '_ \| |_ / _` + "`" + ` |/ _` + "`" + ` \___ \
-| |_| | |_) |  __/ | | |  _| (_| | (_| |___) |
- \___/| .__/ \___|_| |_|_|  \__,_|\__,_|____/
-      |_|
-
-`

@@ -6,8 +6,10 @@ package commands
 import (
 	"fmt"
 	"os"
+	"runtime"
 	"strings"
 
+	"github.com/morikuni/aec"
 	"github.com/spf13/cobra"
 )
 
@@ -89,6 +91,23 @@ Manage your OpenFaaS functions from the command line`,
 
 // runFaas TODO
 func runFaas(cmd *cobra.Command, args []string) {
-	fmt.Printf(figletStr)
+	printFiglet()
 	cmd.Help()
 }
+
+func printFiglet() {
+	figletColoured := aec.BlueF.Apply(figletStr)
+	if runtime.GOOS == "windows" {
+		figletColoured = aec.GreenF.Apply(figletStr)
+	}
+	fmt.Printf(figletColoured)
+}
+
+const figletStr = `  ___                   _____           ____
+ / _ \ _ __   ___ _ __ |  ___|_ _  __ _/ ___|
+| | | | '_ \ / _ \ '_ \| |_ / _` + "`" + ` |/ _` + "`" + ` \___ \
+| |_| | |_) |  __/ | | |  _| (_| | (_| |___) |
+ \___/| .__/ \___|_| |_|_|  \__,_|\__,_|____/
+      |_|
+
+`
