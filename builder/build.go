@@ -11,8 +11,10 @@ import (
 	"path/filepath"
 	"strings"
 
+	"github.com/morikuni/aec"
 	"github.com/openfaas/faas-cli/schema"
 	"github.com/openfaas/faas-cli/stack"
+	"github.com/openfaas/faas-cli/util"
 )
 
 // AdditionalPackageBuildArg holds the special build-arg keyname for use with build-opts.
@@ -111,6 +113,23 @@ func BuildImage(image string, handler string, functionName string, language stri
 		ExecCommand(tempPath, spaceSafeCmdLine)
 		fmt.Printf("Image: %s built.\n", imageName)
 
+		if util.UseDockerCLI() {
+			flagSlice := buildFlagSlice(nocache, squash, os.Getenv("http_proxy"), os.Getenv("https_proxy"), buildArgMap)
+			spaceSafeCmdLine := []string{"docker", "build"}
+			spaceSafeCmdLine = append(spaceSafeCmdLine, flagSlice...)
+			spaceSafeCmdLine = append(spaceSafeCmdLine, "-t", image, ".")
+			ExecCommand(tempPath, spaceSafeCmdLine)
+		} else {
+			httpProxy, httpsProxy := os.Getenv("http_proxy"), os.Getenv("https_proxy")
+			if err := Build(tempPath, image, nocache, squash, map[string]*string{
+				"http_proxy":  &httpProxy,
+				"https_proxy": &httpsProxy,
+			}); err != nil {
+				log.Fatalf(aec.RedF.Apply(err.Error()))
+			}
+		}
+
+		fmt.Printf("Image: %s built.\n", image)
 	} else {
 		return fmt.Errorf("language template: %s not supported, build a custom Dockerfile", language)
 	}

@@ -4,14 +4,30 @@
 package builder
 
 import (
+	"bytes"
+	"context"
 	"fmt"
 	"log"
 	"os"
 	"os/exec"
 	"strings"
 
+	"github.com/docker/docker/api/types"
+	"github.com/docker/docker/client"
 	"github.com/morikuni/aec"
+	"github.com/openfaas/faas-cli/util"
 )
+
+var dockerClient *client.Client
+
+func init() {
+	// Init Docker client
+	if c, err := client.NewEnvClient(); err != nil {
+		log.Fatalf(aec.RedF.Apply(err.Error()))
+	} else {
+		dockerClient = c
+	}
+}
 
 // ExecCommand run a system command
 func ExecCommand(tempPath string, builder []string) {
