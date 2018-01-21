@@ -12,6 +12,7 @@ import (
 	"strings"
 	"time"
 
+	"github.com/morikuni/aec"
 	"github.com/openfaas/faas-cli/config"
 	"github.com/spf13/cobra"
 )
@@ -20,6 +21,7 @@ var (
 	username      string
 	password      string
 	passwordStdin bool
+	insecure      bool
 )
 
 func init() {
@@ -27,6 +29,7 @@ func init() {
 	loginCmd.Flags().StringVarP(&username, "username", "u", "", "Gateway username")
 	loginCmd.Flags().StringVarP(&password, "password", "p", "", "Gateway password")
 	loginCmd.Flags().BoolVar(&passwordStdin, "password-stdin", false, "Reads the gateway password from stdin")
+	loginCmd.Flags().BoolVar(&insecure, "insecure", true, "Do not validate SSL certificate")
 
 	faasCmd.AddCommand(loginCmd)
 }
@@ -41,6 +44,7 @@ var loginCmd = &cobra.Command{
 }
 
 func runLogin(cmd *cobra.Command, args []string) error {
+	fmt.Println(aec.RedF.Apply("WARNING: in future release, --insecure flag will be set to false by default"))
 
 	if len(username) == 0 {
 		return fmt.Errorf("must provide --username or -u")
@@ -97,7 +101,7 @@ func runLogin(cmd *cobra.Command, args []string) error {
 func validateLogin(gatewayURL string, user string, pass string) error {
 	tr := &http.Transport{
 		DisableKeepAlives: false,
-		TLSClientConfig:   &tls.Config{InsecureSkipVerify: true},
+		TLSClientConfig:   &tls.Config{InsecureSkipVerify: insecure},
 	}
 	client := &http.Client{
 		Transport: tr,
