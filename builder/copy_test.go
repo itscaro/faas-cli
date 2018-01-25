@@ -1,7 +1,6 @@
 package builder
 
 import (
-	"errors"
 	"fmt"
 	"io/ioutil"
 	"log"
@@ -28,7 +27,7 @@ func Test_CopyFiles(t *testing.T) {
 		}
 		defer os.RemoveAll(destDir)
 
-		CopyFiles(srcDir, destDir+"/")
+		CopyFiles(srcDir, destDir)
 		err := checkDestinationFiles(destDir, 2, mode)
 		if err != nil {
 			t.Fatalf("Destination file mode differs from source file mode\n%v", err)
@@ -56,19 +55,4 @@ func setupSourceFolder(numberOfFiles, mode int) (string, error) {
 	}
 
 	return srcDir, nil
-}
-
-func checkDestinationFiles(dir string, numberOfFiles, mode int) error {
-	// Check each file inside the destination folder
-	for i := 1; i <= numberOfFiles; i++ {
-		fileStat, err := os.Stat(fmt.Sprintf("%s/test-file-%d", dir, i))
-		if os.IsNotExist(err) {
-			return err
-		}
-		if fileStat.Mode() != os.FileMode(mode) {
-			return errors.New("expected mode did not match")
-		}
-	}
-
-	return nil
 }
