@@ -7,6 +7,7 @@ import (
 	"fmt"
 	"log"
 	"os"
+	"path/filepath"
 	"sync"
 
 	"github.com/morikuni/aec"
@@ -117,6 +118,7 @@ func build(services *stack.Services, queueDepth int, shrinkwrap bool) {
 				if len(function.Language) == 0 {
 					fmt.Println("Please provide a valid --lang or 'Dockerfile' for your function.")
 				} else {
+					function.Handler = filepath.Join(filepath.Dir(yamlFile), function.Handler)
 					builder.BuildImage(function.Image, function.Handler, function.Name, function.Language, nocache, squash, shrinkwrap)
 				}
 				fmt.Printf(aec.YellowF.Apply("[%d] < Building %s done.\n"), index, function.Name)
