@@ -9,6 +9,7 @@ import (
 	"fmt"
 	"io/ioutil"
 	"net/http"
+	"os"
 	"strings"
 	"text/tabwriter"
 	"time"
@@ -87,6 +88,21 @@ func storeList(store string) ([]schema.StoreItem, error) {
 
 	store = strings.TrimRight(store, "/")
 
+	// Given store is a local file
+	if _, err := os.Stat(store); err == nil {
+		if bytesOut, err := ioutil.ReadFile(store); err != nil {
+			jsonErr := json.Unmarshal(bytesOut, &results)
+			if jsonErr != nil {
+				return nil, fmt.Errorf("cannot parse result from OpenFaaS store at URL: %s\n%s", store, jsonErr.Error())
+			}
+
+			return results, nil
+		} else {
+			return nil, err
+		}
+	}
+
+	// Given store is a URL
 	timeout := 60 * time.Second
 	client := proxy.MakeHTTPClient(&timeout)
 
