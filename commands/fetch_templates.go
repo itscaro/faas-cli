@@ -92,17 +92,25 @@ func moveTemplates(repoPath string, overwrite bool) ([]string, []string, error) 
 	templateDir := filepath.Join(repoPath, templateDirectory)
 	templates, err := ioutil.ReadDir(templateDir)
 	if err != nil {
-		return nil, nil, fmt.Errorf("can't find templates in: %s", repoPath)
+		// If there is no ./template at root, assume that templates are at root
+		templateDir = repoPath
+		templates, err = ioutil.ReadDir(templateDir)
 	}
 
 	for _, file := range templates {
-		if !file.IsDir() {
+		if !file.IsDir() || file.Name() == ".git" {
 			continue
 		}
+
+		// Directory does not contain template.yml then it's not a template directory
+		if _, err := os.Stat(filepath.Join(templateDir, file.Name(), "template.yml")); err != nil {
+			continue
+		}
+
+		// Language is the directory name
 		language := file.Name()
 
-		canWrite := canWriteLanguage(availableLanguages, language, overwrite)
-		if canWrite {
+		if canWriteLanguage(availableLanguages, language, overwrite) {
 			fetchedLanguages = append(fetchedLanguages, language)
 			// Do cp here
 			languageSrc := filepath.Join(templateDir, language)
