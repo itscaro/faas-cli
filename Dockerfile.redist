@@ -1,5 +1,5 @@
 # Build stage
-FROM golang:1.9.2 as builder
+FROM golang:1.10.0 as builder
 
 RUN curl -sL \
      https://github.com/alexellis/license-check/releases/download/0.1/license-check > \
