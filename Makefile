@@ -38,3 +38,11 @@ FUNCTION_UP_TIMEOUT?=30
 test-templating:
 	./build_integration_test.sh
 
+.PHONY: check-license
+check-license:
+	@/usr/bin/license-check -path ./ --verbose=false "Alex Ellis" "OpenFaaS Author(s)" "OpenFaaS Project"
+
+.PHONY: check-gofmt
+check-gofmt:
+	@test -z "$$(gofmt -l $$(find . -type f -name '*.go' -not -path "./vendor/*"))" || \
+		{ echo "Run \"gofmt -s -w\" on your Golang code"; exit 1; }
